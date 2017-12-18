@@ -1,0 +1,48 @@
+body,
+html {
+    height: 100%;
+}
+
+#main {
+    /* The image used */
+    background-image: url("../img/dario-veronesi-426327.jpg");
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body>.grid {
+    height: 100%;
+}
+
+.image {
+    margin-top: -100px;
+}
+
+.column {
+    max-width: 450px;
+    opacity: 0.90;
+}
+
+.content {
+    opacity: 1;
+    -webkit-text-stroke: 1px black;
+}
+
+.flip-enter-active {
+    transition: all .5s cubic-bezier(0.55, 0.085, 0.68, 0.53); //ease-in-quad
+}
+
+.flip-leave-active {
+    transition: all .5s cubic-bezier(0.25, 0.46, 0.45, 0.94); //ease-out-quad
+}
+
+.flip-enter,
+.flip-leave-to {
+    /* transform: scaleY(0) translateZ(0); */
+    transform: rotateY(180deg) scaleY(0);
+    opacity: 0;
+}
