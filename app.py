@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
 auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
+proxy_service = os.environ.get('TWILIO_PROXY_SERVICE')
 client = Client(account_sid, auth_token)
 
 @app.route('/')
@@ -36,11 +37,10 @@ def numbers(service_sid):
 
 @app.route('/sessions/delete')
 def delete_sessions():
-    all_sessions = client.proxy.services('KScfcb041c86b1cad5299466e468b48545').sessions.list()
+    all_sessions = client.proxy.services(proxy_service).sessions.list()
     for session in all_sessions:
         print(session)
-        client.proxy.services(
-            'KScfcb041c86b1cad5299466e468b48545').sessions(session.sid).delete()
+        client.proxy.services(proxy_service).sessions(session.sid).delete()
     
     return "Sessions deleted!", 200
 
@@ -70,21 +70,21 @@ def create_session():
     session_ttl = form_data['sessionLength']
     try:
         session = client.proxy \
-            .services("KScfcb041c86b1cad5299466e468b48545") \
+            .services(proxy_service) \
             .sessions \
             .create(unique_name=session_name, ttl=session_ttl)
         
         print(session.sid)
 
         participant1 = client.proxy \
-            .services("KScfcb041c86b1cad5299466e468b48545") \
+            .services(proxy_service) \
             .sessions(session.sid) \
             .participants.create(identifier=restaurant, friendly_name="Restaurant")
 
         print("PARTICIPANT 1 >>> " + participant1.proxy_identifier)
         
         participant2 = client.proxy \
-            .services("KScfcb041c86b1cad5299466e468b48545") \
+            .services(proxy_service) \
             .sessions(session.sid) \
             .participants.create(identifier=customer, friendly_name="Customer")
         
@@ -97,11 +97,11 @@ def create_session():
 
         }
 
-        client.proxy.services("KScfcb041c86b1cad5299466e468b48545") \
+        client.proxy.services(proxy_service) \
             .sessions(session.sid).participants(participant1.sid) \
             .message_interactions.create(body="Proxymo established! Reply to start chat!")
 
-        client.proxy.services("KScfcb041c86b1cad5299466e468b48545") \
+        client.proxy.services(proxy_service) \
             .sessions(session.sid).participants(participant2.sid) \
             .message_interactions.create(body="Proxymo established! Reply to start chat!")
 
