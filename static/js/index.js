@@ -3,14 +3,15 @@ const app = new Vue({
     data: {
         sessionName: '',
         sessionLength: '',
-        restaurant: '',
-        customer: '',
+        spy1: '',
+        spy2: '',
         proxy_num: '',
         proxyEstablished: false,
         message: 'Proxymo not yet configured!',
         isError: false,
         isLoading: false,
-        timer: null
+        timer: null,
+        formComplete: false,
 
     },
     methods: {
@@ -22,8 +23,8 @@ const app = new Vue({
             const payload = {
                 sessionName: this.sessionName,
                 sessionLength: this.sessionLength,
-                restaurant: this.restaurant,
-                customer: this.customer
+                spy1: this.spy1,
+                spy2: this.spy2
             }
             console.log(payload)
             axios.post('/session/create', payload)
@@ -41,7 +42,7 @@ const app = new Vue({
                      console.log(typeof (timeLeft))
                      timeKeeper = setInterval(function () {
                          timeLeft--;
-                         console.log(timeLeft)
+                         // console.log(timeLeft)
                          vm.timer = timeLeft.toString();
                          if (timeLeft <= 0) {
                              clearInterval(timeKeeper);
@@ -65,3 +66,34 @@ const app = new Vue({
     }
 });
 Vue.config.devtools = true
+
+$('.ui.form')
+    .form({
+        on: 'blur',
+        fields: {
+            spy1: {
+                rules: [
+                    {
+                        type: 'regExp[/^\\+?[1-9]\\d{1,14}$/]',
+                        prompt: '{name} must be E.164 format! eg +4474777777777',
+                    },
+                    {
+                        type: 'empty',
+                        prompt: '{name} must be E.164 format! eg +4474777777777',
+                    }
+                ]
+            },
+            spy2: {
+                rules: [
+                    {
+                        type: 'regExp[/^\\+?[1-9]\\d{1,14}$/]',
+                        prompt: '{name} must be E.164 format! eg +4474777777777',
+                    },
+                    {
+                        type: 'empty',
+                        prompt: '{name} must be E.164 format! eg +4474777777777',
+                    }
+                ]
+            }
+        }
+    });

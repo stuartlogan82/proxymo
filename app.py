@@ -35,6 +35,12 @@ def numbers(service_sid):
 
     return number_array
 
+def buy_number():
+    pass
+
+def add_number_to_service(number_sid):
+    pass
+
 @app.route('/sessions/delete')
 def delete_sessions():
     all_sessions = client.proxy.services(proxy_service).sessions.list()
@@ -54,9 +60,6 @@ def setup():
         message = "New Proxy Service ({}) Created!\nThe following numbers have been added to the service: {}".format(
         service_sid, service_numbers)
     except TwilioException as e:
-        print(type(e))
-        print(e)
-        print(e.args)
         message = str(e.args)
 
     return message, 200
@@ -65,8 +68,8 @@ def setup():
 def create_session():
     form_data=request.get_json()
     session_name = form_data['sessionName']
-    restaurant = form_data['restaurant']
-    customer = form_data['customer']
+    spy1 = form_data['spy1']
+    spy2 = form_data['spy2']
     session_ttl = form_data['sessionLength']
     try:
         session = client.proxy \
@@ -79,14 +82,14 @@ def create_session():
         participant1 = client.proxy \
             .services(proxy_service) \
             .sessions(session.sid) \
-            .participants.create(identifier=restaurant, friendly_name="Restaurant")
+            .participants.create(identifier=spy1, friendly_name="spy1")
 
         print("PARTICIPANT 1 >>> " + participant1.proxy_identifier)
         
         participant2 = client.proxy \
             .services(proxy_service) \
             .sessions(session.sid) \
-            .participants.create(identifier=customer, friendly_name="Customer")
+            .participants.create(identifier=spy2, friendly_name="spy2")
         
         print("PARTICIPANT 2>>> " + participant2.proxy_identifier)
         pprint(participant2)
@@ -106,7 +109,8 @@ def create_session():
             .message_interactions.create(body="Proxymo established! Reply to start chat!")
 
         return jsonify(proxy_details), 200
-    except Exception as e:
+    except TwilioException as e:
+        pprint(e.code)
         error = jsonify(e.args)
         return error, 500
         
